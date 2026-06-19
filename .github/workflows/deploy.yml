@@ -5,27 +5,23 @@ on:
     branches:
       - main
 
-env:
-  REGISTRY_NAME: "tasky-registry" # Replace with your DOCR name
-  IMAGE_NAME: "tasky"         # Replace with your image name
-
 jobs:
-  build_and_push:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-      - name: Log in to DigitalOcean Container Registry
-        run: doctl registry login --expiry-seconds 1200
+      - name: Login to DOCR
+        run: doctl registry login --expiry-seconds 300
 
-      - name: Build Docker image
-        run: docker build -t ://digitalocean.com{{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+      - name: Build image
+        run: docker build -t registry.digitalocean.com/tasky-registry/tasky:latest .
 
-      - name: Push image to DOCR
-        run: docker build -t ://digitalocean.com{{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:latest . && docker push --all-tags ://digitalocean.com{{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}
+      - name: Push image
+        run: docker push registry.digitalocean.com/tasky-registry/tasky:latest
