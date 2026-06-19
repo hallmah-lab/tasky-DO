@@ -19,6 +19,9 @@ func main() {
 	router.Static("/assets", "./assets")
 
 	router.GET("/", index)
+	router.GET("/health", func(c *gin.Context) {
+    c.JSON(http.StatusOK, gin.H{"status": "ok"})
+})
 	router.GET("/todos/:userid", controller.GetTodos)
 	router.GET("/todo/:id", controller.GetTodo)
 	router.POST("/todo/:userid", controller.AddTodo)
